@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/poster"
+        android:scaleType="fitXY"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#7d000000">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/btn_star_big_on"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/star"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/movie_rate"
+            android:layout_alignParentBottom="true"
+            android:textSize="20sp"
+            android:textColor="#fff"
+
+            android:layout_toRightOf="@id/star"
+
+            />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

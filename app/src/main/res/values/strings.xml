@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_details_">Details_Activity</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <string name="sort_by_list">Sortby</string>
+    <string-array name="pref_sort_list_titles">
+        <item>Favorite</item>
+        <item>Most Popularity</item>
+        <item>Vote Average</item>
+    </string-array>
+    <string-array name="pref_sort_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+</resources>
