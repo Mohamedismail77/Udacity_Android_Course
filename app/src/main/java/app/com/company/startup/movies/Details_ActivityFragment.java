@@ -1,5 +1,6 @@
 package app.com.company.startup.movies;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +44,7 @@ public class Details_ActivityFragment extends Fragment {
     public DetailsAdabter detailsAdabter;
 
 
+
     public Details_ActivityFragment() {
     }
 
@@ -53,53 +55,63 @@ public class Details_ActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-        mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
-        movie = getActivity().getIntent().getExtras().getParcelable("details");
-        mtrailersName = new ArrayList();
-        FetshTrailersJsonData();
+        if(getActivity().getIntent().getExtras() != null) {
+            mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
+            movie = getActivity().getIntent().getExtras().getParcelable("details");
+            mtrailersName = new ArrayList();
+            FetshTrailersJsonData();
+        } else {
+
+
+
+        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         RelativeLayout detail_layout = (RelativeLayout) inflater.inflate(R.layout.fragment_details_, container, false);
         ListView listView = (ListView) detail_layout.findViewById(R.id.movie_details_list);
-        detailsAdabter = new DetailsAdabter(getActivity(),movie);
-        listView.setAdapter(detailsAdabter);
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if(position > 0) {
-
-                    Uri.Builder url = new Uri.Builder();
-                    url.scheme("https")
-                            .authority("youtube.com")
-                            .appendPath("watch")
-                            .appendQueryParameter("v",movie.getmTrailers_keys().get(position-1));
+            detailsAdabter = new DetailsAdabter(getActivity(), movie);
+            listView.setAdapter(detailsAdabter);
 
 
-                    Intent imIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.build().toString()));
-                    PackageManager packageManager = getActivity().getPackageManager();
-                    List activities = packageManager.queryIntentActivities(imIntent,
-                            PackageManager.MATCH_DEFAULT_ONLY);
-                    boolean isIntentSafe = activities.size() > 0;
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    // Start an activity if it's safe
-                    if (isIntentSafe) {
-                        startActivity(imIntent);
+                    if (position > 0) {
+
+                        Uri.Builder url = new Uri.Builder();
+                        url.scheme("https")
+                                .authority("youtube.com")
+                                .appendPath("watch")
+                                .appendQueryParameter("v", movie.getmTrailers_keys().get(position - 1));
+
+
+                        Intent imIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.build().toString()));
+                        PackageManager packageManager = getActivity().getPackageManager();
+                        List activities = packageManager.queryIntentActivities(imIntent,
+                                PackageManager.MATCH_DEFAULT_ONLY);
+                        boolean isIntentSafe = activities.size() > 0;
+
+                        // Start an activity if it's safe
+                        if (isIntentSafe) {
+                            startActivity(imIntent);
+                        }
+
+
                     }
 
-
                 }
+            });
 
-            }
-        });
+
+
 
 
         return detail_layout;
@@ -109,7 +121,9 @@ public class Details_ActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FetshTrailersJsonData();
+        if(getActivity().getIntent().hasExtra("details")) {
+            FetshTrailersJsonData();
+        }
     }
 
     public  void FetshTrailersJsonData() {
@@ -169,6 +183,10 @@ public class Details_ActivityFragment extends Fragment {
         mrequestQueue.add(jsonObjectRequest);
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
 
 
 

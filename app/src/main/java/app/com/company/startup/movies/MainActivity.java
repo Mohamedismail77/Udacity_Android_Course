@@ -5,16 +5,19 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
 
+    private boolean mTwobane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +28,22 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar.setLogo(R.drawable.play);
 
+        if(findViewById(R.id.detail_container) != null) {
 
+            mTwobane = true;
 
-        Fragment fb = new MainActivityFragment();
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.container,fb);
-        ft.commit();
+            Fragment fb = new Details_ActivityFragment();
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.add(R.id.detail_container,fb);
+            ft.addToBackStack(null);
+            ft.commit();
+
+        } else {
+
+            mTwobane = false;
+
+        }
 
 
 
@@ -61,5 +73,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemSelected(Movie movie) {
 
+        if(mTwobane) {
+            Toast.makeText(getApplicationContext(),"Two bane activated",Toast.LENGTH_SHORT).show();
+
+
+
+        } else {
+
+            Intent intent = new Intent(MainActivity.this,Details_Activity.class);
+            intent.putExtra("details",movie);
+            startActivity(intent);
+
+        }
+    }
 }

@@ -26,7 +26,6 @@ public class Details_Activity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
 
-
         Fragment fb = new Details_ActivityFragment();
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

@@ -1,5 +1,6 @@
 package app.com.company.startup.movies;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,8 @@ public class MainActivityFragment extends Fragment {
     public ArrayList<String> mMoviesTitles;
     public ArrayList<String> mPostersUrl;
     public  GridViewAdabter mGridAdapter;
+
+    public Callback mCallback;
 
 
     public GridView mGrid;
@@ -97,9 +100,12 @@ public class MainActivityFragment extends Fragment {
         mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(),Details_Activity.class);
+
+                mCallback.onItemSelected(mMovies.get(position));
+
+                /*Intent intent = new Intent(getActivity(),Details_Activity.class);
                 intent.putExtra("details",mMovies.get(position));
-                startActivity(intent);
+                startActivity(intent);*/
 
             }
         });
@@ -108,6 +114,12 @@ public class MainActivityFragment extends Fragment {
         return frameLayout;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mCallback = (Callback) activity;
+    }
 
     @Override
     public void onStart() {
@@ -184,6 +196,12 @@ public class MainActivityFragment extends Fragment {
     }
 
 
+
+    public interface Callback{
+
+        public void onItemSelected(Movie movie);
+
+    }
 
 
 }

@@ -23,6 +23,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/movie_list"
+        android:layout_weight="1"
+        android:name="app.com.company.startup.movies.MainActivityFragment"
+        tools:layout="@layout/fragment_main" />
 
 
 
