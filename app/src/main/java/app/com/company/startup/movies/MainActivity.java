@@ -32,12 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
             mTwobane = true;
 
-            Fragment fb = new Details_ActivityFragment();
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.detail_container,fb);
-            ft.addToBackStack(null);
-            ft.commit();
+
 
         } else {
 
@@ -77,8 +72,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     public void onItemSelected(Movie movie) {
 
         if(mTwobane) {
-            Toast.makeText(getApplicationContext(),"Two bane activated",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),"Two bane activated",Toast.LENGTH_SHORT).show();
+            Fragment fb = new Details_ActivityFragment();
 
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("movie",movie);
+            fb.setArguments(bundle);
+
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.detail_container,fb);
+            ft.commit();
 
 
         } else {

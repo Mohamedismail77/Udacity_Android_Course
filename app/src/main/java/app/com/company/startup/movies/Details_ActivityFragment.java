@@ -54,17 +54,20 @@ public class Details_ActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        Bundle bundle = getArguments();
 
-        if(getActivity().getIntent().getExtras() != null) {
-            mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
+        if(bundle == null) {//getActivity().getIntent().getExtras() != null) {
+
             movie = getActivity().getIntent().getExtras().getParcelable("details");
-            mtrailersName = new ArrayList();
-            FetshTrailersJsonData();
+
         } else {
 
-
+            movie = bundle.getParcelable("movie");
 
         }
+        mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
+        mtrailersName = new ArrayList();
+        FetshTrailersJsonData();
 
     }
 
