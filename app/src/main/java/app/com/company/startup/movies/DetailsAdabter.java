@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,11 +22,13 @@ public class DetailsAdabter extends BaseAdapter{
 
     private Context mContext;
     private Movie mMovie;
+    private boolean mAddOrRemove;
 
-    public DetailsAdabter(Context context,Movie movie) {
+    public DetailsAdabter(Context context,Movie movie, boolean state) {
 
         this.mContext = context;
         this.mMovie = movie;
+        this.mAddOrRemove = state;
     }
 
     @Override
@@ -62,11 +65,18 @@ public class DetailsAdabter extends BaseAdapter{
             TextView releaseDaate = (TextView) convertView.findViewById(R.id.date);
             TextView vote = (TextView) convertView.findViewById(R.id.vote);
             TextView overView = (TextView) convertView.findViewById(R.id.over_view);
+            Button addOrRemove = (Button) convertView.findViewById(R.id.add_remove);
 
             originalTitle.setText(mMovie.getmTitle());
             releaseDaate.setText(mMovie.getmReleaseDate());
             vote.setText(mMovie.getReadableRate(mMovie.getmRate()));
             overView.setText(mMovie.getmOverView());
+            if(mAddOrRemove) {
+                addOrRemove.setText("Remove from favorite");
+            } else {
+                addOrRemove.setText("Add to favorite");
+            }
+
 
             Picasso.with(mContext)
                     .load(mMovie.getmPosterUrl())

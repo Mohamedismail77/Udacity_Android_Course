@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Toast;
 
 
 public class Details_Activity extends AppCompatActivity {
@@ -32,6 +34,14 @@ public class Details_Activity extends AppCompatActivity {
         ft.add(R.id.detail_container,fb);
         ft.commit();
 
+
+    }
+
+
+    public void AddOrRemove(View V){
+
+        Toast.makeText(this,"from details activity",Toast.LENGTH_SHORT).show();
+        //TODO add movie to data base
 
     }
 

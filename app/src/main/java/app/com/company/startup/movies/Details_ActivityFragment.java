@@ -3,9 +3,11 @@ package app.com.company.startup.movies;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class Details_ActivityFragment extends Fragment {
 
 
     public DetailsAdabter detailsAdabter;
+    public boolean mAddOrRemove;
 
 
 
@@ -56,7 +59,16 @@ public class Details_ActivityFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if(bundle == null) {//getActivity().getIntent().getExtras() != null) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String setting = sharedPreferences.getString("sort_by","0");
+
+        if(setting.equals("1")) {
+            mAddOrRemove = true;
+        } else {
+            mAddOrRemove = false;
+        }
+
+        if(bundle == null) {
 
             movie = getActivity().getIntent().getExtras().getParcelable("details");
 
@@ -65,6 +77,9 @@ public class Details_ActivityFragment extends Fragment {
             movie = bundle.getParcelable("movie");
 
         }
+
+
+
         mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
         mtrailersName = new ArrayList();
         FetshTrailersJsonData();
@@ -79,7 +94,7 @@ public class Details_ActivityFragment extends Fragment {
         ListView listView = (ListView) detail_layout.findViewById(R.id.movie_details_list);
 
 
-            detailsAdabter = new DetailsAdabter(getActivity(), movie);
+            detailsAdabter = new DetailsAdabter(getActivity(), movie,mAddOrRemove);
             listView.setAdapter(detailsAdabter);
 
 
@@ -158,10 +173,6 @@ public class Details_ActivityFragment extends Fragment {
                         trailer_name.add(result.getJSONObject(i).getString("name"));
                         trailer_key.add(result.getJSONObject(i).getString("key"));
 
-                       /* LinearLayout template = (LinearLayout) LinearLayout.inflate(getActivity(),R.layout.trailer_template,null);
-                        TextView trailerName = (TextView) template.findViewById(R.id.trailer_name);
-                        trailerName.setText(result.getJSONObject(i).getString("name"));
-                        mtrailers.addView(template);*/
                     }
 
                     movie.setmTrailers_keys(trailer_key);
