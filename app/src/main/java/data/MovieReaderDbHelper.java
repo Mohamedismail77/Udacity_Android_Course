@@ -17,7 +17,7 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
                     MovieEntry._ID + " INTEGER PRIMARY KEY," +
                     MovieEntry.MOVIE_TITLE_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-                    MovieEntry.MOVIE_RATING_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    MovieEntry.MOVIE_RATING_COLUMN_NAME + " REAL" + COMMA_SEP +
                     MovieEntry.MOVIE_RELEASE_DATE_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     MovieEntry.MOVIE_OVERVIEW_COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     MovieEntry.MOVIE_POSTER_LOCATION_COLUMN_NAME + TEXT_TYPE+" )";

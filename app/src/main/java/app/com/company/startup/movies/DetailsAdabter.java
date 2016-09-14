@@ -1,6 +1,7 @@
 package app.com.company.startup.movies;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -22,13 +24,13 @@ public class DetailsAdabter extends BaseAdapter{
 
     private Context mContext;
     private Movie mMovie;
-    private boolean mAddOrRemove;
 
-    public DetailsAdabter(Context context,Movie movie, boolean state) {
+
+    public DetailsAdabter(Context context,Movie movie) {
 
         this.mContext = context;
         this.mMovie = movie;
-        this.mAddOrRemove = state;
+
     }
 
     @Override
@@ -71,16 +73,22 @@ public class DetailsAdabter extends BaseAdapter{
             releaseDaate.setText(mMovie.getmReleaseDate());
             vote.setText(mMovie.getReadableRate(mMovie.getmRate()));
             overView.setText(mMovie.getmOverView());
-            if(mAddOrRemove) {
+            if(mMovie.getmFavorite() > 0) {
                 addOrRemove.setText("Remove from favorite");
+                addOrRemove.setTag("remove");
+                ContextWrapper cw = new ContextWrapper(mContext);
+                File directory = cw.getDir("posters", Context.MODE_PRIVATE);
+                File myImageFile = new File(directory, mMovie.getmTitle().concat(".jpeg"));
+                Picasso.with(mContext).load(myImageFile).into(thumbnail);
             } else {
                 addOrRemove.setText("Add to favorite");
+                addOrRemove.setTag("add");
+                Picasso.with(mContext)
+                        .load(mMovie.getmPosterUrl())
+                        .into(thumbnail);
             }
 
 
-            Picasso.with(mContext)
-                    .load(mMovie.getmPosterUrl())
-                    .into(thumbnail);
 
             return convertView;
 

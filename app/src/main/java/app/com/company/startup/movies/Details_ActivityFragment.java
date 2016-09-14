@@ -44,7 +44,7 @@ public class Details_ActivityFragment extends Fragment {
 
 
     public DetailsAdabter detailsAdabter;
-    public boolean mAddOrRemove;
+
 
 
 
@@ -58,15 +58,6 @@ public class Details_ActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
         Bundle bundle = getArguments();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String setting = sharedPreferences.getString("sort_by","0");
-
-        if(setting.equals("1")) {
-            mAddOrRemove = true;
-        } else {
-            mAddOrRemove = false;
-        }
 
         if(bundle == null) {
 
@@ -94,7 +85,7 @@ public class Details_ActivityFragment extends Fragment {
         ListView listView = (ListView) detail_layout.findViewById(R.id.movie_details_list);
 
 
-            detailsAdabter = new DetailsAdabter(getActivity(), movie,mAddOrRemove);
+            detailsAdabter = new DetailsAdabter(getActivity(), movie);
             listView.setAdapter(detailsAdabter);
 
 

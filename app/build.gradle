@@ -28,4 +28,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'it.sephiroth.android.library.picasso:picasso:2.5.2.4b'
     compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

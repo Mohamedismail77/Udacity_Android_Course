@@ -20,18 +20,20 @@ public class Movie implements Parcelable {
     private ArrayList<String> mTrailers_keys;
     private Double mRate;
     private int mID;
+    private int mFavorite;
 
 
 
 
-    public Movie(String poster, String title, String overView,String releaseDate, Double rate,int id) {
+    public Movie(String poster, String title, String overView,String releaseDate, Double rate,int id,int fav) {
 
-        this.mPoster = poster;
-        this.mTitle = title;
-        this.mRate = rate;
-        this.mOverView = overView;
-        this.mReleaseDate = releaseDate;
-        this.mID = id;
+        mPoster = poster;
+        mTitle = title;
+        mRate = rate;
+        mOverView = overView;
+        mReleaseDate = releaseDate;
+        mID = id;
+        mFavorite = fav;
         mTrailers_names = new ArrayList<>();
         mTrailers_keys = new ArrayList<>();
 
@@ -44,6 +46,7 @@ public class Movie implements Parcelable {
     public void setmTrailers_keys(ArrayList<String> mTrailers_keys) {
         this.mTrailers_keys = mTrailers_keys;
     }
+
 
     public ArrayList<String> getmTrailers_names() {
         return mTrailers_names;
@@ -92,6 +95,10 @@ public class Movie implements Parcelable {
         return mID;
     }
 
+    public int getmFavorite() {
+        return mFavorite;
+    }
+
     protected Movie(Parcel in) {
         mPoster = in.readString();
         mTitle = in.readString();
@@ -99,8 +106,11 @@ public class Movie implements Parcelable {
         mReleaseDate = in.readString();
         mRate = in.readDouble();
         mID = in.readInt();
+        mFavorite = in.readInt();
         mTrailers_names = in.readArrayList(ClassLoader.getSystemClassLoader());
         mTrailers_keys = in.readArrayList(ClassLoader.getSystemClassLoader());
+
+
 
     }
 
@@ -128,8 +138,10 @@ public class Movie implements Parcelable {
         dest.writeString(mReleaseDate);
         dest.writeDouble(mRate);
         dest.writeInt(mID);
+        dest.writeInt(mFavorite);
         dest.writeStringList(mTrailers_names);
         dest.writeStringList(mTrailers_keys);
+
 
     }
 }

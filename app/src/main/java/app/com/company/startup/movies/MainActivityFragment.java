@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -26,6 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import data.MovieReaderContract.MovieEntry;
+import data.MovieReaderDbHelper;
 
 
 /**
@@ -81,6 +86,9 @@ public class MainActivityFragment extends Fragment {
                 break;
             default:
                 //TODO  get the saved movies from database
+                getActivity().setTitle(" Favorite Movies");
+                mGridAdapter = new GridViewAdabter(getActivity(),R.layout.poster_layout,mMovies);
+                getMoviesFromDb();
                 break;
         }
 
@@ -103,10 +111,6 @@ public class MainActivityFragment extends Fragment {
 
                 mCallback.onItemSelected(mMovies.get(position));
 
-                /*Intent intent = new Intent(getActivity(),Details_Activity.class);
-                intent.putExtra("details",mMovies.get(position));
-                startActivity(intent);*/
-
             }
         });
 
@@ -124,7 +128,27 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FetshJsonData();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String setting = sharedPreferences.getString("sort_by","0");
+
+        switch (setting){
+            case "0":
+                API_URL_QUERY = "popularity.desc";
+                getActivity().setTitle(" Popular Movie");
+                FetshJsonData();
+                break;
+            case "-1":
+                API_URL_QUERY = "vote_average.desc";
+                getActivity().setTitle(" High Rated Movie");
+                FetshJsonData();
+                break;
+            default:
+                //TODO  get the saved movies from database
+                getActivity().setTitle(" Favorite Movies");
+                mGridAdapter = new GridViewAdabter(getActivity(),R.layout.poster_layout,mMovies);
+                getMoviesFromDb();
+                break;
+        }
     }
 
     public  void FetshJsonData() {
@@ -149,6 +173,7 @@ public class MainActivityFragment extends Fragment {
                 String releaseDate ;
                 Double rate;
                 int id;
+                int favorite;
 
                 try {
                     JSONArray result = response.getJSONArray("results");
@@ -165,9 +190,11 @@ public class MainActivityFragment extends Fragment {
                          releaseDate = result.getJSONObject(i).getString("release_date");
                          rate = result.getJSONObject(i).getDouble("vote_average");
                          id = result.getJSONObject(i).getInt("id");
+                         favorite = 0;
 
 
-                        Movie movie = new Movie(posterPath,originalTitle,overView,releaseDate,rate,id);
+
+                        Movie movie = new Movie(posterPath,originalTitle,overView,releaseDate,rate,id,favorite);
                         mMovies.add(movie);
 
                         mMoviesTitles.add(movie.getmTitle());
@@ -200,6 +227,57 @@ public class MainActivityFragment extends Fragment {
     public interface Callback{
 
         public void onItemSelected(Movie movie);
+
+    }
+
+
+    public void getMoviesFromDb() {
+        MovieReaderDbHelper movieReaderDbHelper = new MovieReaderDbHelper(getActivity());
+        SQLiteDatabase db = movieReaderDbHelper.getReadableDatabase();
+
+        String posterPath ;
+        String originalTitle;
+        String overView;
+        String releaseDate ;
+        Double rate;
+        int id;
+        int favorite;
+
+        mPostersUrl.clear();
+        mMoviesTitles.clear();
+        mGridAdapter.clear();
+        Cursor c = db.query(
+                MovieEntry.TABLE_NAME,                     // The table to query
+                null,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        while(c.moveToNext()){
+
+
+
+            posterPath = c.getString(c.getColumnIndex(MovieEntry.MOVIE_POSTER_LOCATION_COLUMN_NAME));
+            originalTitle = c.getString(c.getColumnIndex(MovieEntry.MOVIE_TITLE_COLUMN_NAME));
+            overView = c.getString(c.getColumnIndex(MovieEntry.MOVIE_OVERVIEW_COLUMN_NAME));
+            releaseDate = c.getString(c.getColumnIndex(MovieEntry.MOVIE_RELEASE_DATE_COLUMN_NAME));
+            rate = c.getDouble(c.getColumnIndex(MovieEntry.MOVIE_RATING_COLUMN_NAME));
+            id = c.getInt(c.getColumnIndex(MovieEntry._ID));
+            favorite = 1;
+
+            Movie movie = new Movie(posterPath,originalTitle,overView,releaseDate,rate,id,favorite);
+            mMovies.add(movie);
+
+            mMoviesTitles.add(movie.getmTitle());
+            mPostersUrl.add(movie.getmPosterUrl());
+        }
+
+        mGridAdapter.notifyDataSetChanged();
+        c.close();
+        db.close();
 
     }
 

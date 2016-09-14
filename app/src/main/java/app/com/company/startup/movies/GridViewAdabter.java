@@ -1,6 +1,7 @@
 package app.com.company.startup.movies;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,19 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
  * Created by MonaIsmail on 8/16/2016.
  */
 public class GridViewAdabter extends ArrayAdapter<Movie> {
+
+    private Context mContext;
+
     public GridViewAdabter(Context context, int resource, ArrayList<Movie> objects) {
         super(context, resource, objects);
+        mContext = context;
     }
 
 
@@ -37,9 +43,18 @@ public class GridViewAdabter extends ArrayAdapter<Movie> {
         }
 
         ImageView PosterImage = (ImageView) convertView.findViewById(R.id.poster);
-        Picasso.with(getContext())
-                .load(movie.getmPosterUrl())
-                .into(PosterImage);
+
+        if(movie.getmFavorite() > 0) {
+            ContextWrapper cw = new ContextWrapper(mContext);
+            File directory = cw.getDir("posters", Context.MODE_PRIVATE);
+            File myImageFile = new File(directory, movie.getmTitle().concat(".jpeg"));
+            Picasso.with(mContext).load(myImageFile).into(PosterImage);
+        } else {
+            Picasso.with(mContext)
+                    .load(movie.getmPosterUrl())
+                    .into(PosterImage);
+        }
+
 
         TextView PosterName = (TextView) convertView.findViewById(R.id.movie_rate);
         PosterName.setText(String.valueOf(movie.getmRate()));
