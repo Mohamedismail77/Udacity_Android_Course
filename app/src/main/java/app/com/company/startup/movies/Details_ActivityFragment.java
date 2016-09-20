@@ -1,13 +1,12 @@
 package app.com.company.startup.movies;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.MovieReaderContract.TrailersEntry;
+import data.MovieReaderDbHelper;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -40,8 +42,6 @@ public class Details_ActivityFragment extends Fragment {
     public RequestQueue mrequestQueue;
 
     public Movie movie;
-    public ArrayList mtrailersName;
-
 
     public DetailsAdabter detailsAdabter;
 
@@ -58,22 +58,8 @@ public class Details_ActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
         Bundle bundle = getArguments();
+        movie = bundle.getParcelable("movie");
 
-        if(bundle == null) {
-
-            movie = getActivity().getIntent().getExtras().getParcelable("details");
-
-        } else {
-
-            movie = bundle.getParcelable("movie");
-
-        }
-
-
-
-        mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
-        mtrailersName = new ArrayList();
-        FetshTrailersJsonData();
 
     }
 
@@ -88,6 +74,12 @@ public class Details_ActivityFragment extends Fragment {
             detailsAdabter = new DetailsAdabter(getActivity(), movie);
             listView.setAdapter(detailsAdabter);
 
+            if(movie.getmFavorite() > 0) {
+                getTrailersFromDb();
+            } else {
+                mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
+                FetshTrailersJsonData();
+            }
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -130,9 +122,7 @@ public class Details_ActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(getActivity().getIntent().hasExtra("details")) {
-            FetshTrailersJsonData();
-        }
+
     }
 
     public  void FetshTrailersJsonData() {
@@ -153,11 +143,8 @@ public class Details_ActivityFragment extends Fragment {
 
                 ArrayList<String> trailer_name = new ArrayList<>() ;
                 ArrayList<String> trailer_key = new ArrayList<>();
-
                 try {
                     JSONArray result = response.getJSONArray("results");
-
-
 
                     for(int i = 0; i < result.length(); i++) {
 
@@ -188,10 +175,46 @@ public class Details_ActivityFragment extends Fragment {
         mrequestQueue.add(jsonObjectRequest);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+
+    public void getTrailersFromDb() {
+        MovieReaderDbHelper movieReaderDbHelper = new MovieReaderDbHelper(getActivity());
+        SQLiteDatabase db = movieReaderDbHelper.getReadableDatabase();
+
+        String selection = TrailersEntry.TRAILER_MOVIE_ID_COLUMN_NAME + " = ?";
+        String[] selectionArgs = { String.valueOf(movie.getmID()) };
+
+        ArrayList<String> trailer_name = new ArrayList<>() ;
+        ArrayList<String> trailer_key = new ArrayList<>();
+
+        Cursor c = db.query(
+                TrailersEntry.TABLE_NAME,                     // The table to query
+                null,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        while(c.moveToNext()) {
+
+            trailer_name.add(c.getString(c.getColumnIndex(TrailersEntry.TRAILER_TITLE_COLUMN_NAME)));
+            trailer_key.add(c.getString(c.getColumnIndex(TrailersEntry.TRAILER_YOUTUBE_KEY_COLUMN_NAME)));
+
+        }
+
+        movie.setmTrailers_keys(trailer_key);
+        movie.setmTrailers_names(trailer_name);
+
+
+        detailsAdabter.notifyDataSetChanged();
+
+        c.close();
+        db.close();
+
     }
+
+
 
 
 

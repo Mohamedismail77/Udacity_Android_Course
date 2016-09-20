@@ -1,15 +1,15 @@
 package app.com.company.startup.movies;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-/**
+/*************************************
  * Created by MonaIsmail on 8/10/2016.
- */
+ **************************************/
+
 public class Movie implements Parcelable {
 
     private String mPoster;
@@ -65,8 +65,7 @@ public class Movie implements Parcelable {
     }
 
     public String getReadableRate(Double vote) {
-        String rate = vote.toString().concat("/10");
-        return rate;
+        return vote.toString().concat("/10");
     }
 
     public String getmPosterUrl() {
@@ -78,9 +77,8 @@ public class Movie implements Parcelable {
                 .appendPath("p")
                 .appendPath("w185")
                 .appendPath(mPoster.replace("/",""));
-        String URL = url.build().toString();
 
-        return URL;
+        return url.build().toString();
     }
 
     public String getmTitle() {

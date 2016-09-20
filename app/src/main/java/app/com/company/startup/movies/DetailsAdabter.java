@@ -1,25 +1,24 @@
 package app.com.company.startup.movies;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 
-/**
+/*************************************
  * Created by MonaIsmail on 8/19/2016.
- */
+ ************************************/
+
 public class DetailsAdabter extends BaseAdapter{
 
     private Context mContext;
@@ -48,6 +47,7 @@ public class DetailsAdabter extends BaseAdapter{
         return 0;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -73,6 +73,7 @@ public class DetailsAdabter extends BaseAdapter{
             releaseDaate.setText(mMovie.getmReleaseDate());
             vote.setText(mMovie.getReadableRate(mMovie.getmRate()));
             overView.setText(mMovie.getmOverView());
+
             if(mMovie.getmFavorite() > 0) {
                 addOrRemove.setText("Remove from favorite");
                 addOrRemove.setTag("remove");

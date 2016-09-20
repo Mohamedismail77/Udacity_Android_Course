@@ -14,9 +14,10 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
+/*************************************
  * Created by MonaIsmail on 8/16/2016.
- */
+ *************************************/
+
 public class GridViewAdabter extends ArrayAdapter<Movie> {
 
     private Context mContext;

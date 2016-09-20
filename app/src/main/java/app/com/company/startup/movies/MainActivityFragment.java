@@ -2,7 +2,6 @@ package app.com.company.startup.movies;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -33,9 +32,10 @@ import data.MovieReaderContract.MovieEntry;
 import data.MovieReaderDbHelper;
 
 
-/**
+/**************************************************
  * A placeholder fragment containing a simple view.
- */
+ **************************************************/
+
 public class MainActivityFragment extends Fragment {
 
 
@@ -274,7 +274,6 @@ public class MainActivityFragment extends Fragment {
             mMoviesTitles.add(movie.getmTitle());
             mPostersUrl.add(movie.getmPosterUrl());
         }
-
         mGridAdapter.notifyDataSetChanged();
         c.close();
         db.close();

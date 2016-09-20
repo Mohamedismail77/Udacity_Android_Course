@@ -17,11 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -33,7 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import data.MovieReaderDbHelper;
-import data.MovieReaderContract.MovieEntry;
+import data.MovieReaderContract.*;
 
 
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
@@ -50,18 +48,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setLogo(R.drawable.play);
-
-        if (findViewById(R.id.detail_container) != null) {
-
-            mTwobane = true;
-
-
-        } else {
-
-            mTwobane = false;
-
+        if (toolbar != null) {
+            toolbar.setLogo(R.drawable.play);
         }
+
+        mTwobane = findViewById(R.id.detail_container) != null;
 
 
     }
@@ -130,32 +121,56 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
-            values.put(MovieEntry.MOVIE_TITLE_COLUMN_NAME,mMovie.getmTitle());
-            values.put(MovieEntry.MOVIE_RELEASE_DATE_COLUMN_NAME,mMovie.getmReleaseDate());
-            values.put(MovieEntry.MOVIE_RATING_COLUMN_NAME,mMovie.getmRate());
-            values.put(MovieEntry.MOVIE_OVERVIEW_COLUMN_NAME,mMovie.getmOverView());
-            values.put(MovieEntry.MOVIE_POSTER_LOCATION_COLUMN_NAME,mMovie.getmTitle());
+            values.put(MovieEntry.MOVIE_TITLE_COLUMN_NAME, mMovie.getmTitle());
+            values.put(MovieEntry.MOVIE_RELEASE_DATE_COLUMN_NAME, mMovie.getmReleaseDate());
+            values.put(MovieEntry.MOVIE_RATING_COLUMN_NAME, mMovie.getmRate());
+            values.put(MovieEntry.MOVIE_OVERVIEW_COLUMN_NAME, mMovie.getmOverView());
+            values.put(MovieEntry.MOVIE_POSTER_LOCATION_COLUMN_NAME, mMovie.getmTitle());
 
             // Insert the new row, returning the primary key value of the new row
             long newRowId = db.insert(MovieEntry.TABLE_NAME, null, values);
+            if(newRowId < 0) {
+                Toast.makeText(this,"Movie already in the favorite list",Toast.LENGTH_SHORT).show();
+            } else {
+                //TODO add trailers to database
+
+                for(int i = 0; i < mMovie.getmTrailers_names().size(); i++) {
+                    values.clear();
+                    values.put(TrailersEntry.TRAILER_TITLE_COLUMN_NAME, mMovie.getmTrailers_names().get(i));
+                    values.put(TrailersEntry.TRAILER_YOUTUBE_KEY_COLUMN_NAME, mMovie.getmTrailers_keys().get(i));
+                    values.put(TrailersEntry.TRAILER_MOVIE_ID_COLUMN_NAME, newRowId);
+                    db.insert(TrailersEntry.TABLE_NAME, null, values);
+                }
+
+                Toast.makeText(this,"Movie added successfully in the favorite list",Toast.LENGTH_SHORT).show();
+            }
 
             db.close();
 
         } else{
             //TODO remove the movie from database
+
+            // Define 'where' part of query.
+            String movieSelection = MovieEntry.MOVIE_TITLE_COLUMN_NAME + " LIKE ?";
+            String trailerSelection = TrailersEntry.TRAILER_MOVIE_ID_COLUMN_NAME + " LIKE ?";
+
+            // Specify arguments in placeholder order.
+            String[] movieSelectionArgs = { mMovie.getmTitle() };
+            String[] trailerSelectionArgs = { String.valueOf(mMovie.getmID()) };
+
+            // Issue SQL statement.
+            db.delete(MovieEntry.TABLE_NAME, movieSelection, movieSelectionArgs);
+            db.delete(TrailersEntry.TABLE_NAME, trailerSelection, trailerSelectionArgs);
+            db.close();
+
+            // Delete poster image from the phone.
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir("posters", Context.MODE_PRIVATE);
             File myImageFile = new File(directory, mMovie.getmTitle().concat(".jpeg"));
+
             if(myImageFile.delete()) {
-                Toast.makeText(this,"Movie removed sucessfully",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Movie removed successfully",Toast.LENGTH_SHORT).show();
             }
-            // Define 'where' part of query.
-            String selection = MovieEntry.MOVIE_TITLE_COLUMN_NAME + " LIKE ?";
-            // Specify arguments in placeholder order.
-            String[] selectionArgs = { mMovie.getmTitle() };
-            // Issue SQL statement.
-            db.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
-            db.close();
 
         }
 
@@ -166,14 +181,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     private Target picassoImageTarget(Context context, final String imageDir, final String imageName) {
 
         ContextWrapper cw = new ContextWrapper(context);
-        final File directory = cw.getDir(imageDir, Context.MODE_PRIVATE); // path to /data/data/yourapp/app_imageDir
+        final File directory = cw.getDir(imageDir, Context.MODE_PRIVATE);
         return new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        final File myImageFile = new File(directory, imageName); // Create image file
+                        final File myImageFile = new File(directory, imageName);
                         FileOutputStream fos = null;
                         try {
                             fos = new FileOutputStream(myImageFile);
@@ -182,12 +197,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                             e.printStackTrace();
                         } finally {
                             try {
-                                fos.close();
+                                if (fos != null) {
+                                    fos.close();
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-                        Log.i("image", "image saved to >>>" + myImageFile.getAbsolutePath());
+
                     }
                 }).start();
             }
@@ -198,8 +215,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                if (placeHolderDrawable != null) {
-                }
+
             }
         };
     }
