@@ -37,7 +37,7 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_TRAILER_ENTRIES =
             "DROP TABLE IF EXISTS " + TrailersEntry.TABLE_NAME;
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "MovieReader.db";
 
     public MovieReaderDbHelper(Context context) {
