@@ -18,6 +18,8 @@ public class Movie implements Parcelable {
     private String mReleaseDate;
     private ArrayList<String> mTrailers_names;
     private ArrayList<String> mTrailers_keys;
+    private ArrayList<String> mReviews;
+
     private Double mRate;
     private int mID;
     private int mFavorite;
@@ -36,6 +38,7 @@ public class Movie implements Parcelable {
         mFavorite = fav;
         mTrailers_names = new ArrayList<>();
         mTrailers_keys = new ArrayList<>();
+        mReviews = new ArrayList<>();
 
     }
 
@@ -47,6 +50,9 @@ public class Movie implements Parcelable {
         this.mTrailers_keys = mTrailers_keys;
     }
 
+    public void setmReviews(ArrayList<String> mReviews) {
+        this.mReviews = mReviews;
+    }
 
     public ArrayList<String> getmTrailers_names() {
         return mTrailers_names;
@@ -54,6 +60,10 @@ public class Movie implements Parcelable {
 
     public ArrayList<String> getmTrailers_keys() {
         return mTrailers_keys;
+    }
+
+    public ArrayList<String> getmReviews() {
+        return mReviews;
     }
 
     public String getmOverView() {
@@ -107,6 +117,7 @@ public class Movie implements Parcelable {
         mFavorite = in.readInt();
         mTrailers_names = in.readArrayList(ClassLoader.getSystemClassLoader());
         mTrailers_keys = in.readArrayList(ClassLoader.getSystemClassLoader());
+        mReviews = in.readArrayList(ClassLoader.getSystemClassLoader());
 
 
 
@@ -139,6 +150,7 @@ public class Movie implements Parcelable {
         dest.writeInt(mFavorite);
         dest.writeStringList(mTrailers_names);
         dest.writeStringList(mTrailers_keys);
+        dest.writeStringList(mReviews);
 
 
     }

@@ -77,12 +77,12 @@ public class MainActivityFragment extends Fragment {
             case "0":
                 API_URL_QUERY = "popularity.desc";
                 getActivity().setTitle(" Popular Movie");
-                FetshJsonData();
+                FetchJsonData();
                 break;
             case "-1":
                 API_URL_QUERY = "vote_average.desc";
                 getActivity().setTitle(" High Rated Movie");
-                FetshJsonData();
+                FetchJsonData();
                 break;
             default:
                 //TODO  get the saved movies from database
@@ -135,12 +135,12 @@ public class MainActivityFragment extends Fragment {
             case "0":
                 API_URL_QUERY = "popularity.desc";
                 getActivity().setTitle(" Popular Movie");
-                FetshJsonData();
+                FetchJsonData();
                 break;
             case "-1":
                 API_URL_QUERY = "vote_average.desc";
                 getActivity().setTitle(" High Rated Movie");
-                FetshJsonData();
+                FetchJsonData();
                 break;
             default:
                 //TODO  get the saved movies from database
@@ -151,7 +151,7 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    public  void FetshJsonData() {
+    public  void FetchJsonData() {
 
         Uri.Builder url = new Uri.Builder();
         url.scheme(API_URL_SCHEME)

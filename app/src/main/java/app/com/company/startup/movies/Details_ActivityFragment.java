@@ -79,14 +79,14 @@ public class Details_ActivityFragment extends Fragment {
                 getTrailersFromDb();
             } else {
                 mrequestQueue  = Volley.newRequestQueue(getActivity().getApplicationContext());
-                FetshTrailersJsonData();
+                FetchTrailersJsonData();
             }
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    if (position > 0) {
+                    if (position > 0 && position < movie.getmTrailers_names().size()) {
 
                         Uri.Builder url = new Uri.Builder();
                         url.scheme("https")
@@ -126,7 +126,7 @@ public class Details_ActivityFragment extends Fragment {
 
     }
 
-    public  void FetshTrailersJsonData() {
+    public  void FetchTrailersJsonData() {
 
         final Uri.Builder url = new Uri.Builder();
         url.scheme("https")
@@ -157,6 +157,54 @@ public class Details_ActivityFragment extends Fragment {
                     movie.setmTrailers_keys(trailer_key);
                     movie.setmTrailers_names(trailer_name);
 
+                    FetchReviewsJsonData();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        mrequestQueue.add(jsonObjectRequest);
+    }
+
+    public void FetchReviewsJsonData() {
+
+        final Uri.Builder url = new Uri.Builder();
+        url.scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(String.valueOf(movie.getmID()))
+                .appendPath("reviews")
+                .appendQueryParameter("api_key",API_URL_APP_KEY);
+        String URL = url.build().toString();
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                ArrayList<String> reviews = new ArrayList<>() ;
+
+                try {
+                    JSONArray result = response.getJSONArray("results");
+
+                    for(int i = 0; i < result.length(); i++) {
+
+                        reviews.add(result.getJSONObject(i).getString("content"));
+
+
+                    }
+
+                    movie.setmReviews(reviews);
+
 
                     detailsAdabter.notifyDataSetChanged();
 
@@ -169,6 +217,7 @@ public class Details_ActivityFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                detailsAdabter.notifyDataSetChanged();
 
             }
         });

@@ -34,7 +34,7 @@ public class DetailsAdabter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return mMovie.getmTrailers_names().size()+1;
+        return mMovie.getmTrailers_names().size()+1+mMovie.getmReviews().size();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DetailsAdabter extends BaseAdapter{
 
             return convertView;
 
-        } else {
+        } else if(position > 0 && position < mMovie.getmTrailers_names().size()) {
 
             if(convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.trailer_template,parent,false);
@@ -104,6 +104,17 @@ public class DetailsAdabter extends BaseAdapter{
                 trailerName.setText(mMovie.getmTrailers_names().get(position-1));
             }
             return  convertView;
+        } else {
+
+            if(convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.reviews_template,parent,false);
+            }
+
+            TextView review = (TextView) convertView.findViewById(R.id.reviews);
+            if(mMovie.getmReviews().size() > 0) {
+                review.setText(mMovie.getmReviews().get(position-mMovie.getmTrailers_names().size()));
+            }
+            return convertView;
         }
 
     }
