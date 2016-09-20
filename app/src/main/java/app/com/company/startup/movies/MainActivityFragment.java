@@ -44,7 +44,7 @@ public class MainActivityFragment extends Fragment {
     private String API_URL_PATH_1 = "3";
     private String API_URL_PATH_2 = "discover";
     private String API_URL_PATH_3 = "movie";
-    private String API_URL_APP_KEY = "ADD YOUR API KEY";
+    private String API_URL_APP_KEY = "b0556b9a5c20ae2d3dcb3c4fd463c6de";//"ADD YOUR API KEY";
     private String API_URL_QUERY = "popularity.desc";
 
     public RequestQueue mrequestQueue;
