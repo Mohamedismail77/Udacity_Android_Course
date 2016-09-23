@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /*************************************
@@ -19,6 +20,8 @@ public class Movie implements Parcelable {
     private ArrayList<String> mTrailers_names;
     private ArrayList<String> mTrailers_keys;
     private ArrayList<String> mReviews;
+
+    private ArrayList<MovieDetails> mMovieAdapter;
 
     private Double mRate;
     private int mID;
@@ -39,6 +42,8 @@ public class Movie implements Parcelable {
         mTrailers_names = new ArrayList<>();
         mTrailers_keys = new ArrayList<>();
         mReviews = new ArrayList<>();
+        mMovieAdapter = new ArrayList<>();
+        createAdapter();
 
     }
 
@@ -52,6 +57,7 @@ public class Movie implements Parcelable {
 
     public void setmReviews(ArrayList<String> mReviews) {
         this.mReviews = mReviews;
+        mMovieAdapter = createAdapter();
     }
 
     public ArrayList<String> getmTrailers_names() {
@@ -107,6 +113,10 @@ public class Movie implements Parcelable {
         return mFavorite;
     }
 
+    public ArrayList<MovieDetails> getmMovieAdapter() {
+        return mMovieAdapter;
+    }
+
     protected Movie(Parcel in) {
         mPoster = in.readString();
         mTitle = in.readString();
@@ -118,6 +128,7 @@ public class Movie implements Parcelable {
         mTrailers_names = in.readArrayList(ClassLoader.getSystemClassLoader());
         mTrailers_keys = in.readArrayList(ClassLoader.getSystemClassLoader());
         mReviews = in.readArrayList(ClassLoader.getSystemClassLoader());
+        mMovieAdapter = in.readArrayList(ClassLoader.getSystemClassLoader());
 
 
 
@@ -151,7 +162,83 @@ public class Movie implements Parcelable {
         dest.writeStringList(mTrailers_names);
         dest.writeStringList(mTrailers_keys);
         dest.writeStringList(mReviews);
+        dest.writeList(mMovieAdapter);
 
 
     }
+
+    private ArrayList createAdapter() {
+
+        ArrayList temp = new ArrayList();
+
+        MovieDetails details = new MovieDetails("Head",mTitle);
+        temp.add(details);
+        for (String obj:mTrailers_names)
+        {
+
+            details = new MovieDetails("Trailer",obj);
+            details.mKey = mTrailers_keys.get(mTrailers_names.indexOf(obj));
+            temp.add(details);
+        }
+
+        for (String obj:mReviews)
+        {
+            details = new MovieDetails("review",obj);
+            temp.add(details);
+        }
+        return temp;
+
+    }
+
+    public class MovieDetails implements Parcelable{
+
+        public String mTag;
+        public String mValue;
+        public String mKey;
+
+        public MovieDetails(String tag, String value) {
+
+            mTag = tag;
+            mValue = value;
+
+        }
+
+
+        protected MovieDetails(Parcel in) {
+            mTag = in.readString();
+            mValue = in.readString();
+            mKey = in.readString();
+        }
+
+        public final Creator<MovieDetails> CREATOR = new Creator<MovieDetails>() {
+            @Override
+            public MovieDetails createFromParcel(Parcel in) {
+                return new MovieDetails(in);
+            }
+
+            @Override
+            public MovieDetails[] newArray(int size) {
+                return new MovieDetails[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+
+            dest.writeString(mTag);
+            dest.writeString(mValue);
+            dest.writeString(mKey);
+        }
+    }
 }
+
+
+
+
+

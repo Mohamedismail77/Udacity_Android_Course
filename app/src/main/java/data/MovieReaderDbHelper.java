@@ -30,6 +30,12 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
                     TrailersEntry.TRAILER_TITLE_COLUMN_NAME + TEXT_TYPE  + COMMA_SEP +
                     TrailersEntry.TRAILER_YOUTUBE_KEY_COLUMN_NAME + TEXT_TYPE+" )";
 
+    private static final String SQL_CREATE_REVIEW_ENTRIES =
+            "CREATE TABLE " + ReviewsEntry.TABLE_NAME + " (" +
+                    ReviewsEntry._ID + " INTEGER PRIMARY KEY," +
+                    ReviewsEntry.REVIEW_MOVIE_ID_COLUMN_NAME + " INTEGER" + COMMA_SEP +
+                    ReviewsEntry.REVIEW_CONTENT_COLUMN_NAME + TEXT_TYPE+" )";
+
 
     private static final String SQL_DELETE_MOVIE_ENTRIES =
             "DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME;
@@ -37,7 +43,10 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_TRAILER_ENTRIES =
             "DROP TABLE IF EXISTS " + TrailersEntry.TABLE_NAME;
 
-    public static final int DATABASE_VERSION = 1;
+    private static final String SQL_DELETE_REVIEW_ENTRIES =
+            "DROP TABLE IF EXISTS " + ReviewsEntry.TABLE_NAME;
+
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "MovieReader.db";
 
     public MovieReaderDbHelper(Context context) {
@@ -50,6 +59,7 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
 
        db.execSQL(SQL_CREATE_MOVIE_ENTRIES);
        db.execSQL(SQL_CREATE_TRAILER_ENTRIES);
+        db.execSQL(SQL_CREATE_REVIEW_ENTRIES);
 
     }
 
@@ -57,6 +67,7 @@ public class MovieReaderDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_MOVIE_ENTRIES);
         db.execSQL(SQL_DELETE_TRAILER_ENTRIES);
+        db.execSQL(SQL_DELETE_REVIEW_ENTRIES);
         onCreate(db);
     }
 

@@ -12,6 +12,8 @@
         android:key="sort_by"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/sort_by_list" />
+        android:title="@string/sort_by_list"
+
+        />
 
 </PreferenceScreen>

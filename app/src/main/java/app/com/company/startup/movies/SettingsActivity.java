@@ -4,12 +4,13 @@ package app.com.company.startup.movies;
 
 import android.os.Bundle;
 
+import android.preference.Preference;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity{
 
 
     @Override
@@ -33,6 +34,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
 
+
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
@@ -44,4 +46,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
+
 }

@@ -31,7 +31,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.MovieReaderContract.TrailersEntry;
+
+import data.MovieReaderContract.*;
 import data.MovieReaderDbHelper;
 
 /**
@@ -72,7 +73,8 @@ public class Details_ActivityFragment extends Fragment {
         ListView listView = (ListView) detail_layout.findViewById(R.id.movie_details_list);
 
 
-            detailsAdabter = new DetailsAdabter(getActivity(), movie);
+            detailsAdabter = new DetailsAdabter(getActivity(),movie);
+
             listView.setAdapter(detailsAdabter);
 
             if(movie.getmFavorite() > 0) {
@@ -86,13 +88,14 @@ public class Details_ActivityFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    if (position > 0 && position < movie.getmTrailers_names().size()) {
+                    Movie.MovieDetails details = (Movie.MovieDetails) detailsAdabter.getItem(position);
+                    if (details.mTag.equals("Trailer")) {
 
                         Uri.Builder url = new Uri.Builder();
                         url.scheme("https")
                                 .authority("youtube.com")
                                 .appendPath("watch")
-                                .appendQueryParameter("v", movie.getmTrailers_keys().get(position - 1));
+                                .appendQueryParameter("v", details.mKey);
 
 
                         Intent imIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.build().toString()));
@@ -257,10 +260,50 @@ public class Details_ActivityFragment extends Fragment {
         movie.setmTrailers_names(trailer_name);
 
 
+        getReviewsFromDb();
+
+        c.close();
+        db.close();
+
+    }
+
+    public void getReviewsFromDb() {
+
+        MovieReaderDbHelper movieReaderDbHelper = new MovieReaderDbHelper(getActivity());
+        SQLiteDatabase db = movieReaderDbHelper.getReadableDatabase();
+
+        String selection = ReviewsEntry.REVIEW_MOVIE_ID_COLUMN_NAME + " = ?";
+        String[] selectionArgs = { String.valueOf(movie.getmID()) };
+
+
+        ArrayList<String> reviews = new ArrayList<>();
+
+        Cursor c = db.query(
+                ReviewsEntry.TABLE_NAME,                     // The table to query
+                null,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        while(c.moveToNext()) {
+
+            reviews.add(c.getString(c.getColumnIndex(ReviewsEntry.REVIEW_CONTENT_COLUMN_NAME)));
+
+
+        }
+
+        movie.setmReviews(reviews);
+
+
+
         detailsAdabter.notifyDataSetChanged();
 
         c.close();
         db.close();
+
 
     }
 

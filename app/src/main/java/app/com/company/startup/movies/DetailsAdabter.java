@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /*************************************
  * Created by MonaIsmail on 8/19/2016.
@@ -25,21 +28,29 @@ public class DetailsAdabter extends BaseAdapter{
     private Movie mMovie;
 
 
-    public DetailsAdabter(Context context,Movie movie) {
+
+    public DetailsAdabter(Context context, Movie movie) {
 
         this.mContext = context;
         this.mMovie = movie;
+
 
     }
 
     @Override
     public int getCount() {
-        return mMovie.getmTrailers_names().size()+1+mMovie.getmReviews().size();
+        return mMovie.getmMovieAdapter().size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Movie.MovieDetails getItem(int position) {
+
+        if(mMovie.getmMovieAdapter().size() > 0) {
+            return mMovie.getmMovieAdapter().get(position);
+        } else{
+            return null;
+        }
+
     }
 
     @Override
@@ -47,13 +58,32 @@ public class DetailsAdabter extends BaseAdapter{
         return 0;
     }
 
+
+    @Override
+    public int getViewTypeCount() {
+        return 3;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        switch (mMovie.getmMovieAdapter().get(position).mTag) {
+            case "Head":
+                return 0;
+            case "Trailer":
+                return 1;
+            default:
+                return 2;
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        int type = getItemViewType(position);
 
-
-        if(position == 0) {
+        if(type == 0) {
 
 
             if(convertView == null) {
@@ -93,15 +123,15 @@ public class DetailsAdabter extends BaseAdapter{
 
             return convertView;
 
-        } else if(position > 0 && position < mMovie.getmTrailers_names().size()) {
+        } else if(type == 1) {
 
             if(convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.trailer_template,parent,false);
             }
 
             TextView trailerName = (TextView) convertView.findViewById(R.id.trailer_name);
-            if(mMovie.getmTrailers_names().size() > 0) {
-                trailerName.setText(mMovie.getmTrailers_names().get(position-1));
+            if(mMovie.getmMovieAdapter().get(position).mValue != null) {
+                 trailerName.setText(mMovie.getmMovieAdapter().get(position).mValue);
             }
             return  convertView;
         } else {
@@ -111,11 +141,13 @@ public class DetailsAdabter extends BaseAdapter{
             }
 
             TextView review = (TextView) convertView.findViewById(R.id.reviews);
-            if(mMovie.getmReviews().size() > 0) {
-                review.setText(mMovie.getmReviews().get(position-mMovie.getmTrailers_names().size()));
+            if(mMovie.getmMovieAdapter().get(position).mValue != null) {
+                review.setText(mMovie.getmMovieAdapter().get(position).mValue);
             }
             return convertView;
         }
 
     }
+
+
 }

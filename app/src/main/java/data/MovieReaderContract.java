@@ -36,4 +36,11 @@ public class MovieReaderContract {
 
     }
 
+    public static class ReviewsEntry implements BaseColumns {
+        public static final String TABLE_NAME = "reviews";
+        public static final String REVIEW_MOVIE_ID_COLUMN_NAME = "movie_id";
+        public static final String REVIEW_CONTENT_COLUMN_NAME = "content";
+
+    }
+
 }

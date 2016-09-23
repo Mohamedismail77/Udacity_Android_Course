@@ -142,6 +142,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     db.insert(TrailersEntry.TABLE_NAME, null, values);
                 }
 
+                //TODO add reviews to database
+                for(int i = 0; i < mMovie.getmReviews().size(); i++) {
+                    values.clear();
+                    values.put(ReviewsEntry.REVIEW_CONTENT_COLUMN_NAME, mMovie.getmReviews().get(i));
+                    values.put(ReviewsEntry.REVIEW_MOVIE_ID_COLUMN_NAME, newRowId);
+                    db.insert(ReviewsEntry.TABLE_NAME, null, values);
+                }
+
                 Toast.makeText(this,"Movie added successfully in the favorite list",Toast.LENGTH_SHORT).show();
             }
 
