@@ -47,7 +47,7 @@ public class Details_ActivityFragment extends Fragment {
     public DetailsAdabter detailsAdabter;
 
 
-    private String API_URL_APP_KEY = "b0556b9a5c20ae2d3dcb3c4fd463c6de";//  "ADD YOUR API KEY";
+    private String API_URL_APP_KEY =   "ADD YOUR API KEY";
 
 
     public Details_ActivityFragment() {
